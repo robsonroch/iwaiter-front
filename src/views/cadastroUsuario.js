@@ -4,8 +4,16 @@ import FormGroup from '../components/form-group';
 import {withRouter} from 'react-router-dom';
 
 import 'bootswatch/dist/flatly/bootstrap.css'
+import UsuarioService from '../app/service/usuarioService'
+
+import { msgSucesso, msgErro} from '../components/toastr';
 
 class CadastroUsuario extends React.Component {
+
+    constructor(){
+        super();
+        this.service = new UsuarioService();
+    }
 
     state = {
         nome: '',
@@ -14,7 +22,20 @@ class CadastroUsuario extends React.Component {
         senhaRepeticao: ''
     }
 
-    cadastrar = () => {
+    cadastrar = async () => {
+
+        try {
+            const response = await this.service.salvar({
+                nome: this.state.nome,
+                email: this.state.email,
+                senha: this.state.senha
+            });
+            msgSucesso('Usuário cadastrado com sucesso! Faça o login para acessar o SVGFEDisplacementMapElement.')
+            this.props.history.push('/login')
+            
+        } catch (error) {
+            msgErro(error.response.data)
+        }
         console.log(this.state)
     }
 
