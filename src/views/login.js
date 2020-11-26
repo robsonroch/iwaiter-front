@@ -3,11 +3,18 @@ import Card from '../components/card';
 import FormGroup from '../components/form-group';
 import { withRouter } from 'react-router-dom';
 
-import axios from 'axios';
+import UsuarioService from '../app/service/usuarioService';
+import LocalStorageService from '../app/service/localstorageService'
+import { msgErro } from '../components/toastr'
 
 import 'bootswatch/dist/flatly/bootstrap.css'
 
 class Login extends React.Component {
+
+    constructor() {
+        super();
+        this.service = new UsuarioService();
+    }
 
     state = {
         email: '',
@@ -15,7 +22,25 @@ class Login extends React.Component {
         mensagemErro: null
     }
 
-    entrar = () => {
+
+    entrar = async () => {
+
+        try {
+            const response = await this.service.autenticar({
+                email: this.state.email,
+                senha: this.state.senha
+            })
+            console.log(response);
+            LocalStorageService.addItem("_usuario_logado", response.data)
+            this.props.history.push('/home')
+            
+        } catch (error) {
+            msgErro(error.response.data);
+        }
+        
+    }
+
+   /* entrar = () => {
 
         axios.post(
             'http://localhost:9090/api/usuarios/autenticar', {
@@ -27,6 +52,27 @@ class Login extends React.Component {
         console.log('Email: ', this.state.email)
         console.log('Senha: ', this.state.senha)
     }
+
+    another way
+
+    entrar = async () => {
+
+        try {
+            const response = await axios.post(
+                'http://localhost:9090/api/usuarios/autenticar', {
+                email: this.state.email,
+                senha: this.state.senha
+            })
+            localStorage.setItem("_usuario_logado", JSON.stringify(response.data))
+            this.props.history.push('/home')
+            
+        } catch (error) {
+            console.log(error);
+            this.setState({mensagemErro: error.response.data})
+        }
+            
+    }*/
+
 
     prepareCadastrar = () => {
         this.props.history.push('/cadastro-usuarios')

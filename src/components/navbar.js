@@ -17,6 +17,7 @@ function Navbar() {
                         <NavbarItem href="#/cadastro-usuarios" label="Usuários"/>
                         <NavbarItem href="#/lancamentos" label="Lançamentos"/>
                         <NavbarItem href="#/login" label="Login"/>
+                        <NavbarItem href="#/dragg" label="Draggable Teste"/>
                     </ul>
 
                 </div>
