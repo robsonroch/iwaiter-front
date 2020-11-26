@@ -22,14 +22,46 @@ class CadastroUsuario extends React.Component {
         senhaRepeticao: ''
     }
 
+    validar(){
+        const msgs = []
+
+        if(!this.state.nome){
+            msgs.push('O campo nome é obrigatório.')
+        }
+
+        if(!this.state.email){
+            msgs.push('O campo Email é obrigatório.')
+        }else if(!this.state.email.match(/^[a-z0-9.]+[a-z0-9]+\.[a-z]/)){
+            msgs.push('Informe um Email válido.')
+        }
+
+        if(!this.state.senha || !this.state.senhaRepeticao){
+            msgs.push('Digite a senha 2x.')
+        }else if(this.state.senha !== this.state.senhaRepeticao){
+            msgs.push('As senhas não batem')
+        }
+
+        return msgs
+    }
+
     cadastrar = async () => {
 
+        const msgs = this.validar();
+        const usuario = {
+            nome: this.state.nome,
+            email: this.state.email,
+            senha: this.state.senha
+        }
+
+        if(msgs && msgs.length > 0){
+            msgs.forEach((msg, index) =>{
+                msgErro(msg)
+            })
+            return false;
+        }
+
         try {
-            const response = await this.service.salvar({
-                nome: this.state.nome,
-                email: this.state.email,
-                senha: this.state.senha
-            });
+            const response = await this.service.salvar(usuario);
             msgSucesso('Usuário cadastrado com sucesso! Faça o login para acessar o SVGFEDisplacementMapElement.')
             this.props.history.push('/login')
             
